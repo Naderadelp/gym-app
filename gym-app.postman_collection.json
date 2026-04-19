@@ -1,0 +1,442 @@
+{
+  "info": {
+    "name": "Gym App API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{base_url}}/api/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"mobile\": \"01012345678\",\n  \"password\": \"Password1!\",\n  \"password_confirmation\": \"Password1!\",\n  \"age\": 25,\n  \"height\": 175.5,\n  \"weight\": 80.0\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.data && json.data.token) {",
+                  "  pm.collectionVariables.set('token', json.data.token);",
+                  "  console.log('Token saved:', json.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{base_url}}/api/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@gym.com\",\n  \"password\": \"password\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/auth/logout"
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{base_url}}/api/auth/forgot-password",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{base_url}}/api/auth/reset-password",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"RESET_TOKEN_FROM_EMAIL\",\n  \"email\": \"john@example.com\",\n  \"password\": \"NewPassword1!\",\n  \"password_confirmation\": \"NewPassword1!\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Exercises",
+      "item": [
+        {
+          "name": "List Exercises",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/exercises",
+              "host": ["{{base_url}}"],
+              "path": ["api", "exercises"],
+              "query": [
+                { "key": "filter[name]", "value": "", "disabled": true },
+                { "key": "filter[category]", "value": "Strength", "disabled": true },
+                { "key": "filter[muscle_group]", "value": "Chest", "disabled": true },
+                { "key": "sort", "value": "-created_at", "disabled": true },
+                { "key": "include", "value": "media", "disabled": true },
+                { "key": "per_page", "value": "15", "disabled": true },
+                { "key": "page", "value": "1", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Exercise",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/exercises",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Bench Press", "type": "text" },
+                { "key": "category", "value": "Strength", "type": "text" },
+                { "key": "muscle_group", "value": "Chest", "type": "text" },
+                { "key": "description", "value": "Classic chest compound movement", "type": "text" },
+                { "key": "image", "type": "file", "src": "", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Exercise",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/exercises/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "exercises", "1"],
+              "query": [
+                { "key": "include", "value": "media", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Exercise",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/exercises/1",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Incline Bench Press", "type": "text" },
+                { "key": "description", "value": "Upper chest variation", "type": "text" },
+                { "key": "_method", "value": "PUT", "type": "text" },
+                { "key": "image", "type": "file", "src": "", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Exercise",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/exercises/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Workout Plans",
+      "item": [
+        {
+          "name": "List Workout Plans",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/workout-plans",
+              "host": ["{{base_url}}"],
+              "path": ["api", "workout-plans"],
+              "query": [
+                { "key": "filter[status]", "value": "active", "disabled": true },
+                { "key": "filter[member_id]", "value": "", "disabled": true },
+                { "key": "sort", "value": "-created_at", "disabled": true },
+                { "key": "include", "value": "exercises,trainer,member", "disabled": true },
+                { "key": "per_page", "value": "15", "disabled": true },
+                { "key": "page", "value": "1", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Workout Plan (Trainer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/workout-plans",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"member_id\": 3,\n  \"name\": \"12-Week Strength Program\",\n  \"description\": \"Progressive overload strength plan\",\n  \"start_date\": \"2026-05-01\",\n  \"end_date\": \"2026-07-24\",\n  \"status\": \"active\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Create Workout Plan (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/workout-plans",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trainer_id\": 2,\n  \"member_id\": 3,\n  \"name\": \"12-Week Strength Program\",\n  \"description\": \"Progressive overload strength plan\",\n  \"start_date\": \"2026-05-01\",\n  \"end_date\": \"2026-07-24\",\n  \"status\": \"active\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Get Workout Plan",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/workout-plans/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "workout-plans", "1"],
+              "query": [
+                { "key": "include", "value": "exercises.media,trainer,member", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Workout Plan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/workout-plans/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Delete Workout Plan",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/workout-plans/1"
+          }
+        },
+        {
+          "name": "Attach Exercise to Plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/workout-plans/1/exercises",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"exercise_id\": 1,\n  \"sets\": 4,\n  \"reps\": 10,\n  \"rest_seconds\": 90,\n  \"notes\": \"Focus on full range of motion\",\n  \"order\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Detach Exercise from Plan",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/workout-plans/1/exercises/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Workout Logs",
+      "item": [
+        {
+          "name": "My Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/logs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "logs"],
+              "query": [
+                { "key": "filter[exercise_id]", "value": "", "disabled": true },
+                { "key": "filter[workout_plan_id]", "value": "", "disabled": true },
+                { "key": "sort", "value": "-logged_at", "disabled": true },
+                { "key": "include", "value": "exercise", "disabled": true },
+                { "key": "per_page", "value": "15", "disabled": true },
+                { "key": "page", "value": "1", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Log a Workout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/logs",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"exercise_id\": 1,\n  \"workout_plan_id\": 1,\n  \"sets_done\": 4,\n  \"reps_done\": 10,\n  \"weight\": 80.0,\n  \"notes\": \"Felt strong today\",\n  \"logged_at\": \"2026-04-19T18:00:00Z\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Member Logs (Admin / Trainer)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/members/3/logs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "members", "3", "logs"],
+              "query": [
+                { "key": "include", "value": "exercise", "disabled": true },
+                { "key": "sort", "value": "-logged_at", "disabled": true },
+                { "key": "per_page", "value": "15", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Member Progress (Admin / Trainer)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/members/3/progress"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/admin/stats"
+          }
+        }
+      ]
+    }
+  ]
+}

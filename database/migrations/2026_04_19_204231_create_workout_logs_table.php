@@ -10,9 +10,9 @@ return new class extends Migration
     {
         Schema::create('workout_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('member_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('member_id')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('workout_plan_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('exercise_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('exercise_id')->nullable()->constrained()->nullOnDelete();
             $table->unsignedSmallInteger('sets_done');
             $table->unsignedSmallInteger('reps_done')->nullable();
             $table->decimal('weight', 5, 2)->nullable();

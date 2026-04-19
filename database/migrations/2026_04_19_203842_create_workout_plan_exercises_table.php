@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('workout_plan_id')->constrained()->cascadeOnDelete();
             $table->foreignId('exercise_id')->constrained()->cascadeOnDelete();
-            $table->unsignedSmallInteger('sets')->default(1);
+            $table->unsignedSmallInteger('sets')->nullable();
             $table->unsignedSmallInteger('reps')->nullable();
             $table->unsignedSmallInteger('duration_seconds')->nullable();
             $table->unsignedSmallInteger('rest_seconds')->default(60);

@@ -12,8 +12,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->string('category');
-            $table->string('muscle_group');
+            $table->string('category')->nullable();
+            $table->string('muscle_group')->nullable();
             $table->timestamps();
         });
     }
