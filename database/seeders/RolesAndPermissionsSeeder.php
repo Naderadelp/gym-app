@@ -38,7 +38,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $member = Role::firstOrCreate(['name' => 'member']);
         $member->syncPermissions([
             'index-exercise', 'show-exercise',
-            'show-workout-plan',
+            'index-workout-plan', 'show-workout-plan',
             'index-workout-log', 'show-workout-log', 'create-workout-log',
         ]);
     }

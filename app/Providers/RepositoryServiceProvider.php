@@ -12,5 +12,10 @@ class RepositoryServiceProvider extends ServiceProvider
             \App\Repositories\Contracts\ExerciseRepositoryInterface::class,
             \App\Repositories\Eloquent\ExerciseRepository::class,
         );
+
+        $this->app->bind(
+            \App\Repositories\Contracts\WorkoutPlanRepositoryInterface::class,
+            \App\Repositories\Eloquent\WorkoutPlanRepository::class,
+        );
     }
 }
