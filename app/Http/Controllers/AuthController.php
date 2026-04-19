@@ -16,7 +16,7 @@ class AuthController extends BaseController
         $user = User::create($request->validated());
         $user->assignRole('member');
 
-        $token = $user->createToken('mobile')->plainTextToken;
+        $token = $user->createToken('mobile', $user->getPermissionsViaRoles()->pluck('name')->toArray())->plainTextToken;
 
         return $this->success([
             'user'  => new UserResource($user),
@@ -32,7 +32,7 @@ class AuthController extends BaseController
             return $this->error('Invalid credentials.', 401);
         }
 
-        $token = $user->createToken('mobile')->plainTextToken;
+        $token = $user->createToken('mobile', $user->getPermissionsViaRoles()->pluck('name')->toArray())->plainTextToken;
 
         return $this->success([
             'user'  => new UserResource($user),
