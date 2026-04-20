@@ -30,4 +30,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('members/{member}/progress', [WorkoutLogController::class, 'memberProgress']);
 
     Route::get('admin/stats', [AdminController::class, 'stats']);
+    Route::put('admin/users/{user}/role', [AdminController::class, 'assignRole']);
 });

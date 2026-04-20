@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Admin\AssignRoleRequest;
 use App\Http\Resources\WorkoutLogResource;
 use App\Models\Exercise;
 use App\Models\User;
@@ -11,6 +12,19 @@ use Illuminate\Http\JsonResponse;
 
 class AdminController extends BaseController
 {
+    public function assignRole(AssignRoleRequest $request, User $user): JsonResponse
+    {
+        abort_if(!auth()->user()->hasRole('admin'), 403, 'Access denied.');
+
+        $user->syncRoles([$request->role]);
+
+        return $this->success([
+            'user'        => $user->only('id', 'name', 'email'),
+            'role'        => $request->role,
+            'permissions' => $user->getPermissionsViaRoles()->pluck('name'),
+        ], message: 'Role assigned successfully.');
+    }
+
     public function stats(): JsonResponse
     {
         abort_if(
