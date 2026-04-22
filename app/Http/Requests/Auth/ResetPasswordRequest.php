@@ -10,9 +10,10 @@ class ResetPasswordRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'token'    => ['required', 'string'],
-            'email'    => ['required', 'email', 'exists:users,email'],
-            'password' => ['required', 'confirmed', Password::min(8)],
+            'email'         => ['required', 'email', 'exists:users,email'],
+            'token'         => ['sometimes', 'required_with:old_password,password', 'string'],
+            'old_password'  => ['required_with:token', 'string'],
+            'password'      => ['required_with:token', 'confirmed', Password::min(8)],
         ];
     }
 }

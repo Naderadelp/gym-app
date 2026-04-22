@@ -6,6 +6,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -38,5 +39,15 @@ class User extends Authenticatable
             'height'            => 'decimal:2',
             'weight'            => 'decimal:2',
         ];
+    }
+
+    public function generateTokenString(): string
+    {
+        return sprintf(
+            '%s%s%s',
+            config('sanctum.token_prefix', ''),
+            $tokenEntropy = Str::random(128),
+            hash('crc32b', $tokenEntropy)
+        );
     }
 }
