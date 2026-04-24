@@ -23,11 +23,11 @@
 
 **Purpose**: Install all dependencies and wire up the Inertia + Vue 3 pipeline.
 
-- [ ] T001 Install Inertia Laravel adapter: `composer require inertiajs/inertia-laravel`
-- [ ] T002 Install frontend packages: `npm install @inertiajs/vue3 vue @vitejs/plugin-vue chart.js vue-chartjs`
-- [ ] T003 [P] Update `vite.config.js`: import and add `vue()` plugin from `@vitejs/plugin-vue`; add `resources/js/app.js` as Vite entry if not already present
-- [ ] T004 [P] Create `resources/views/app.blade.php`: Inertia root template — include `@viteReactRefresh` equivalent (`@vite(['resources/css/app.css', 'resources/js/app.js'])`), `@inertiaHead`, `@inertia` directives
-- [ ] T005 Bootstrap `resources/js/app.js` with `createInertiaApp`: import `createApp` from Vue, `InertiaProgress`, resolve pages from `Pages/` glob, mount to `#app`
+- [X] T001 Install Inertia Laravel adapter: `composer require inertiajs/inertia-laravel`
+- [X] T002 Install frontend packages: `npm install @inertiajs/vue3 vue @vitejs/plugin-vue chart.js vue-chartjs`
+- [X] T003 [P] Update `vite.config.js`: import and add `vue()` plugin from `@vitejs/plugin-vue`; add `resources/js/app.js` as Vite entry if not already present
+- [X] T004 [P] Create `resources/views/app.blade.php`: Inertia root template — include `@viteReactRefresh` equivalent (`@vite(['resources/css/app.css', 'resources/js/app.js'])`), `@inertiaHead`, `@inertia` directives
+- [X] T005 Bootstrap `resources/js/app.js` with `createInertiaApp`: import `createApp` from Vue, `InertiaProgress`, resolve pages from `Pages/` glob, mount to `#app`
 
 **Checkpoint**: `npm run dev` compiles without errors; visiting `/` loads via Vite.
 
@@ -39,13 +39,13 @@
 
 **⚠️ CRITICAL**: No user story implementation can begin until this phase is complete.
 
-- [ ] T006 Register `HandleInertiaRequests` middleware in `bootstrap/app.php` (add to the `web` middleware group)
-- [ ] T007 [P] Create shared layout `resources/js/Layouts/AppLayout.vue`: top navigation bar (Tailwind-styled) with placeholder links, slot for page content, flash message display (Inertia shared `flash` prop)
-- [ ] T008 [P] Create `app/Http/Controllers/Web/Auth/LoginController.php`: `showLogin()` returns `Inertia::render('Auth/Login')`; `login(Request $request)` validates credentials, calls `Auth::attempt()`, redirects to `dashboard` on success
-- [ ] T009 [P] Create `resources/js/Pages/Auth/Login.vue`: email + password form using `useForm()`, submits to `POST /login`, displays validation errors
-- [ ] T010 [P] Create `app/Http/Controllers/Web/Auth/RegisterController.php`: `showRegister()` returns `Inertia::render('Auth/Register')`; `register()` validates, creates user, logs in, redirects to `dashboard`
-- [ ] T011 [P] Create `resources/js/Pages/Auth/Register.vue`: name + email + password + confirm form, submits to `POST /register`
-- [ ] T012 Add auth and logout routes to `routes/web.php`: `GET /login` → `LoginController@showLogin`; `POST /login` → `LoginController@login`; `GET /register` → `RegisterController@showRegister`; `POST /register` → `RegisterController@register`; `POST /logout` → `Auth::logout()` + redirect; wrap all existing routes + future routes with `auth` middleware group
+- [X] T006 Register `HandleInertiaRequests` middleware in `bootstrap/app.php` (add to the `web` middleware group)
+- [X] T007 [P] Create shared layout `resources/js/Layouts/AppLayout.vue`: top navigation bar (Tailwind-styled) with placeholder links, slot for page content, flash message display (Inertia shared `flash` prop)
+- [X] T008 [P] Create `app/Http/Controllers/Web/Auth/LoginController.php`: `showLogin()` returns `Inertia::render('Auth/Login')`; `login(Request $request)` validates credentials, calls `Auth::attempt()`, redirects to `dashboard` on success
+- [X] T009 [P] Create `resources/js/Pages/Auth/Login.vue`: email + password form using `useForm()`, submits to `POST /login`, displays validation errors
+- [X] T010 [P] Create `app/Http/Controllers/Web/Auth/RegisterController.php`: `showRegister()` returns `Inertia::render('Auth/Register')`; `register()` validates, creates user, logs in, redirects to `dashboard`
+- [X] T011 [P] Create `resources/js/Pages/Auth/Register.vue`: name + email + password + confirm form, submits to `POST /register`
+- [X] T012 Add auth and logout routes to `routes/web.php`: `GET /login` → `LoginController@showLogin`; `POST /login` → `LoginController@login`; `GET /register` → `RegisterController@showRegister`; `POST /register` → `RegisterController@register`; `POST /logout` → `Auth::logout()` + redirect; wrap all existing routes + future routes with `auth` middleware group
 
 **Checkpoint**: Can register, login, and see a blank dashboard page at `/dashboard` without errors.
 
@@ -59,18 +59,18 @@
 
 ### Controllers
 
-- [ ] T013 [P] [US1] Create `app/Http/Controllers/Web/DashboardController.php`: `index()` queries `auth()->user()->workoutSessions()->latest('started_at')->first()`; computes weekly volume (`SUM(weight*reps)` from `workout_logs` via sessions, exclude warmup, current ISO week); returns `Inertia::render('Dashboard', ['latestSession' => ..., 'weeklyVolume' => ...])`
-- [ ] T014 [P] [US1] Create `app/Http/Controllers/Web/ProfileController.php`: `edit()` returns `Inertia::render('Profile/Edit', ['user' => auth()->user()->load('media'), 'bodyMetrics' => ...latest...])`; `update()` validates and calls `auth()->user()->update($validated)` then `Redirect::route('profile.edit')`; `uploadAvatar()` adds media to `'avatar'` collection then `Redirect::back()`
-- [ ] T015 [P] [US1] Create `app/Http/Controllers/Web/BodyMetricController.php`: `store()` validates `logged_at` + `weight`, calls `BodyMetric::updateOrCreate(...)`, `Redirect::back()`
+- [X] T013 [P] [US1] Create `app/Http/Controllers/Web/DashboardController.php`: `index()` queries `auth()->user()->workoutSessions()->latest('started_at')->first()`; computes weekly volume (`SUM(weight*reps)` from `workout_logs` via sessions, exclude warmup, current ISO week); returns `Inertia::render('Dashboard', ['latestSession' => ..., 'weeklyVolume' => ...])`
+- [X] T014 [P] [US1] Create `app/Http/Controllers/Web/ProfileController.php`: `edit()` returns `Inertia::render('Profile/Edit', ['user' => auth()->user()->load('media'), 'bodyMetrics' => ...latest...])`; `update()` validates and calls `auth()->user()->update($validated)` then `Redirect::route('profile.edit')`; `uploadAvatar()` adds media to `'avatar'` collection then `Redirect::back()`
+- [X] T015 [P] [US1] Create `app/Http/Controllers/Web/BodyMetricController.php`: `store()` validates `logged_at` + `weight`, calls `BodyMetric::updateOrCreate(...)`, `Redirect::back()`
 
 ### Vue Pages
 
-- [ ] T016 [US1] Create `resources/js/Pages/Dashboard.vue`: uses `AppLayout`; displays `weeklyVolume` stat card and `latestSession` info; "Start Empty Workout" button submits `POST /workouts/start` via `useForm()`; zero state for new users
-- [ ] T017 [US1] Create `resources/js/Pages/Profile/Edit.vue`: uses `AppLayout`; profile update `useForm({name, display_name, unit_preference})` → `PUT /profile`; avatar upload `useForm({avatar: null}, {forceFormData: true})` → `POST /profile/avatar`; body metric inline form `useForm({logged_at, weight})` → `POST /body-metrics`; history table sorted newest-first
+- [X] T016 [US1] Create `resources/js/Pages/Dashboard.vue`: uses `AppLayout`; displays `weeklyVolume` stat card and `latestSession` info; "Start Empty Workout" button submits `POST /workouts/start` via `useForm()`; zero state for new users
+- [X] T017 [US1] Create `resources/js/Pages/Profile/Edit.vue`: uses `AppLayout`; profile update `useForm({name, display_name, unit_preference})` → `PUT /profile`; avatar upload `useForm({avatar: null}, {forceFormData: true})` → `POST /profile/avatar`; body metric inline form `useForm({logged_at, weight})` → `POST /body-metrics`; history table sorted newest-first
 
 ### Routes
 
-- [ ] T018 [US1] Add dashboard and profile routes to `routes/web.php` inside the `auth` middleware group: `GET /dashboard` (named `dashboard`); `GET /profile`, `PUT /profile`, `POST /profile/avatar`; `POST /body-metrics`
+- [X] T018 [US1] Add dashboard and profile routes to `routes/web.php` inside the `auth` middleware group: `GET /dashboard` (named `dashboard`); `GET /profile`, `PUT /profile`, `POST /profile/avatar`; `POST /body-metrics`
 
 **Checkpoint**: US1 fully functional — profile, avatar upload, and body metric logging work end-to-end.
 
@@ -84,16 +84,16 @@
 
 ### Controllers
 
-- [ ] T019 [P] [US2] Create `app/Http/Controllers/Web/ExerciseController.php`: `index()` uses Spatie QueryBuilder with `availableTo(auth()->id())`, allowed filters `primary_muscle` + `equipment_required`, paginate 20; also passes `muscleOptions`, `equipmentOptions`, and `filters`; returns `Inertia::render('Exercises/Index', [...])`; `store()` validates, creates exercise with `user_id = auth()->id()`, attaches demo image if present, `Redirect::route('exercises.index')`
+- [X] T019 [P] [US2] Create `app/Http/Controllers/Web/ExerciseController.php`: `index()` uses Spatie QueryBuilder with `availableTo(auth()->id())`, allowed filters `primary_muscle` + `equipment_required`, paginate 20; also passes `muscleOptions`, `equipmentOptions`, and `filters`; returns `Inertia::render('Exercises/Index', [...])`; `store()` validates, creates exercise with `user_id = auth()->id()`, attaches demo image if present, `Redirect::route('exercises.index')`
 
 ### Vue Pages
 
-- [ ] T020 [US2] Create `resources/js/Pages/Exercises/Index.vue`: uses `AppLayout`; filter bar with two `<select>` dropdowns bound to `router.get(route('exercises.index'), filters, {preserveState: true})`; responsive grid of exercise cards (name, primary_muscle badge, difficulty 1-3 indicator, demo image if present); "Add Exercise" button → `v-if` toggle of `CreateModal`; pagination links
-- [ ] T021 [P] [US2] Create `resources/js/Pages/Exercises/CreateModal.vue`: `useForm({name, primary_muscle, sub_muscle_target, difficulty_level, description, equipment_required, demonstration: null}, {forceFormData: true})`; `form.post(route('exercises.store'), {onSuccess: () => emit('close')})`; file input for demonstration image; difficulty dropdown (1, 2, 3)
+- [X] T020 [US2] Create `resources/js/Pages/Exercises/Index.vue`: uses `AppLayout`; filter bar with two `<select>` dropdowns bound to `router.get(route('exercises.index'), filters, {preserveState: true})`; responsive grid of exercise cards (name, primary_muscle badge, difficulty 1-3 indicator, demo image if present); "Add Exercise" button → `v-if` toggle of `CreateModal`; pagination links
+- [X] T021 [P] [US2] Create `resources/js/Pages/Exercises/CreateModal.vue`: `useForm({name, primary_muscle, sub_muscle_target, difficulty_level, description, equipment_required, demonstration: null}, {forceFormData: true})`; `form.post(route('exercises.store'), {onSuccess: () => emit('close')})`; file input for demonstration image; difficulty dropdown (1, 2, 3)
 
 ### Routes
 
-- [ ] T022 [US2] Add exercise routes to `routes/web.php`: `GET /exercises` (named `exercises.index`); `POST /exercises` (named `exercises.store`)
+- [X] T022 [US2] Add exercise routes to `routes/web.php`: `GET /exercises` (named `exercises.index`); `POST /exercises` (named `exercises.store`)
 
 **Checkpoint**: US2 independently functional — exercise browse + filter + create working.
 
@@ -107,7 +107,7 @@
 
 ### Controllers
 
-- [ ] T023 [P] [US3] Create `app/Http/Controllers/Web/RoutineController.php` with all 7 methods:
+- [X] T023 [P] [US3] Create `app/Http/Controllers/Web/RoutineController.php` with all 7 methods:
   - `index()`: `auth()->user()->routines()->withCount('routineExercises')->latest()->get()` → `Inertia::render('Routines/Index', [...])`
   - `create()`: `Exercise::availableTo(auth()->id())->get(['id','name','primary_muscle'])` → `Inertia::render('Routines/Builder', [...])`
   - `store()`: validate `name` + `exercises[]`; create Routine; delete+reinsert pivot rows; `Redirect::route('routines.index')`
@@ -118,13 +118,13 @@
 
 ### Vue Pages
 
-- [ ] T024 [US3] Create `resources/js/Pages/Routines/Index.vue`: uses `AppLayout`; cards with routine name, exercise count, "Start" button (→ `POST /workouts/start` with `routine_id`) and "Edit" link; "Generate Smart Workout" button → `showGeneratorModal = true`; "Create Routine" link → `route('routines.create')`; include `SmartGeneratorModal`
-- [ ] T025 [P] [US3] Create `resources/js/Pages/Routines/SmartGeneratorModal.vue`: `useForm({primary_muscle: '', difficulty_level: ''}).post(route('routines.generate'))`; `<select>` for muscle (pass `muscleOptions` as prop or hardcode); `<select>` for difficulty 1/2/3; display flash error inline if no exercises found
-- [ ] T026 [US3] Create `resources/js/Pages/Routines/Builder.vue`: receives `availableExercises` + optional `routine` (edit mode); `searchQuery` ref + computed filtered list; click exercise → push to `selectedExercises` with defaults `{target_sets:3, target_reps:10}`; each selected row shows name, target_sets input, target_reps input, remove button; submit via `useForm({name, exercises: [...]}).post/put`
+- [X] T024 [US3] Create `resources/js/Pages/Routines/Index.vue`: uses `AppLayout`; cards with routine name, exercise count, "Start" button (→ `POST /workouts/start` with `routine_id`) and "Edit" link; "Generate Smart Workout" button → `showGeneratorModal = true`; "Create Routine" link → `route('routines.create')`; include `SmartGeneratorModal`
+- [X] T025 [P] [US3] Create `resources/js/Pages/Routines/SmartGeneratorModal.vue`: `useForm({primary_muscle: '', difficulty_level: ''}).post(route('routines.generate'))`; `<select>` for muscle (pass `muscleOptions` as prop or hardcode); `<select>` for difficulty 1/2/3; display flash error inline if no exercises found
+- [X] T026 [US3] Create `resources/js/Pages/Routines/Builder.vue`: receives `availableExercises` + optional `routine` (edit mode); `searchQuery` ref + computed filtered list; click exercise → push to `selectedExercises` with defaults `{target_sets:3, target_reps:10}`; each selected row shows name, target_sets input, target_reps input, remove button; submit via `useForm({name, exercises: [...]}).post/put`
 
 ### Routes
 
-- [ ] T027 [US3] Add routine routes to `routes/web.php`: `POST /routines/generate` (named `routines.generate`) declared **before** `Route::resource('routines', ...)`; full `Route::resource('routines', Web\RoutineController::class)`
+- [X] T027 [US3] Add routine routes to `routes/web.php`: `POST /routines/generate` (named `routines.generate`) declared **before** `Route::resource('routines', ...)`; full `Route::resource('routines', Web\RoutineController::class)`
 
 **Checkpoint**: US3 independently functional — routine CRUD and smart generator working.
 
@@ -138,22 +138,22 @@
 
 ### Controllers
 
-- [ ] T028 [P] [US4] Create `app/Http/Controllers/Web/WorkoutSessionController.php`:
+- [X] T028 [P] [US4] Create `app/Http/Controllers/Web/WorkoutSessionController.php`:
   - `create(Request $request)`: `WorkoutSession::create(['user_id' => auth()->id(), 'started_at' => now(), 'routine_id' => $request->routine_id])` → `Redirect::route('workouts.show', $session)`
   - `show(WorkoutSession $session)`: authorize ownership; eager load `routine.routineExercises.exercise`, `workoutLogs.exercise`; group logs by `exercise_id` in PHP; `Inertia::render('Workouts/ActiveSession', ['session'=>..., 'logsByExercise'=>..., 'routine'=>...])`
   - `finish(WorkoutSession $session)`: authorize; `$session->update(['ended_at'=>now()])` → `Redirect::route('dashboard')`
-- [ ] T029 [P] [US4] Create `app/Http/Controllers/Web/WorkoutLogController.php`:
+- [X] T029 [P] [US4] Create `app/Http/Controllers/Web/WorkoutLogController.php`:
   - `store(Request $request, WorkoutSession $session)`: authorize session ownership; validate set data; `WorkoutLog::create([..., 'workout_session_id'=>$session->id])` → `Redirect::back()`
   - `destroy(WorkoutLog $log)`: authorize via `WorkoutLogPolicy`; delete → `Redirect::back()`
 
 ### Vue Components
 
-- [ ] T030 [P] [US4] Create `resources/js/Pages/Workouts/components/WorkoutTimer.vue`: receives `startedAt` (ISO string) prop; `setInterval` every 1s computing `elapsed = Math.floor((Date.now() - new Date(startedAt)) / 1000)`; displays as `HH:MM:SS` computed from elapsed; `onUnmounted` clears interval
-- [ ] T031 [P] [US4] Create `resources/js/Pages/Workouts/components/RestTimer.vue`: receives `defaultSeconds` prop (default 60); `remaining` ref, `running` ref; "Start Rest" begins countdown via `setInterval`; shows remaining seconds; "Cancel" resets; `onUnmounted` clears interval
+- [X] T030 [P] [US4] Create `resources/js/Pages/Workouts/components/WorkoutTimer.vue`: receives `startedAt` (ISO string) prop; `setInterval` every 1s computing `elapsed = Math.floor((Date.now() - new Date(startedAt)) / 1000)`; displays as `HH:MM:SS` computed from elapsed; `onUnmounted` clears interval
+- [X] T031 [P] [US4] Create `resources/js/Pages/Workouts/components/RestTimer.vue`: receives `defaultSeconds` prop (default 60); `remaining` ref, `running` ref; "Start Rest" begins countdown via `setInterval`; shows remaining seconds; "Cancel" resets; `onUnmounted` clears interval
 
 ### Vue Page
 
-- [ ] T032 [US4] Create `resources/js/Pages/Workouts/ActiveSession.vue`:
+- [X] T032 [US4] Create `resources/js/Pages/Workouts/ActiveSession.vue`:
   - Header: `<WorkoutTimer :started-at="session.started_at" />`; "Finish Workout" button → `router.post(route('workouts.finish', session.id))`
   - Exercise blocks: iterate over `routine.routineExercises` (if from routine) or unique exercises in `logsByExercise`; each block shows exercise name + set rows
   - Set input form per exercise: `weight`, `reps` inputs, `set_type` select (warmup/normal/drop/failure); "Log Set" button → `router.post(route('workout-logs.store.web', session.id), formData, {preserveScroll: true, only: ['logsByExercise']})`
@@ -163,7 +163,7 @@
 
 ### Routes
 
-- [ ] T033 [US4] Add workout routes to `routes/web.php`: `POST /workouts/start` (named `workouts.start`); `GET /workouts/{session}` (named `workouts.show`); `POST /workouts/{session}/finish` (named `workouts.finish`); `POST /workouts/{session}/logs` (named `workout-logs.store.web`); `DELETE /workout-logs/{log}` (named `workout-logs.destroy.web`)
+- [X] T033 [US4] Add workout routes to `routes/web.php`: `POST /workouts/start` (named `workouts.start`); `GET /workouts/{session}` (named `workouts.show`); `POST /workouts/{session}/finish` (named `workouts.finish`); `POST /workouts/{session}/logs` (named `workout-logs.store.web`); `DELETE /workout-logs/{log}` (named `workout-logs.destroy.web`)
 
 **Checkpoint**: US4 independently functional — full live tracking session working end-to-end.
 
@@ -177,15 +177,15 @@
 
 ### Controller
 
-- [ ] T034 [P] [US5] Create `app/Http/Controllers/Web/AnalyticsController.php`: `index()` computes last-12-weeks volume (same SQL as API phase 5 but formatted as `[{label: 'Week X', value: N}]` with zero-fill for missing weeks); computes PR per exercise (MAX weight, exclude warmup); returns `Inertia::render('Analytics/Index', ['volumeData'=>..., 'personalRecords'=>...])`
+- [X] T034 [P] [US5] Create `app/Http/Controllers/Web/AnalyticsController.php`: `index()` computes last-12-weeks volume (same SQL as API phase 5 but formatted as `[{label: 'Week X', value: N}]` with zero-fill for missing weeks); computes PR per exercise (MAX weight, exclude warmup); returns `Inertia::render('Analytics/Index', ['volumeData'=>..., 'personalRecords'=>...])`
 
 ### Vue Page
 
-- [ ] T035 [US5] Create `resources/js/Pages/Analytics/Index.vue`: uses `AppLayout`; `<Bar :data="chartData" :options="chartOptions" />` from `vue-chartjs`; `chartData` computed from `volumeData` prop (labels + dataset); PR table with exercise name + max weight columns; `isEmpty` computed — show "No data yet" message when all volume values are zero
+- [X] T035 [US5] Create `resources/js/Pages/Analytics/Index.vue`: uses `AppLayout`; `<Bar :data="chartData" :options="chartOptions" />` from `vue-chartjs`; `chartData` computed from `volumeData` prop (labels + dataset); PR table with exercise name + max weight columns; `isEmpty` computed — show "No data yet" message when all volume values are zero
 
 ### Routes
 
-- [ ] T036 [US5] Add analytics route to `routes/web.php`: `GET /analytics` → `Web\AnalyticsController@index` (named `analytics.index`)
+- [X] T036 [US5] Add analytics route to `routes/web.php`: `GET /analytics` → `Web\AnalyticsController@index` (named `analytics.index`)
 
 **Checkpoint**: US5 independently functional — charts and PR table rendering with correct warmup exclusion.
 
@@ -193,10 +193,10 @@
 
 ## Phase 8: Polish & Cross-Cutting Concerns
 
-- [ ] T037 [P] Update `resources/js/Layouts/AppLayout.vue` with nav links for all sections: Dashboard, Exercises, Routines, Analytics, Profile; active-link highlighting using Inertia `usePage().url`
-- [ ] T038 [P] Add zero/empty states to `Dashboard.vue` (new user with no sessions) and `Routines/Index.vue` (no routines yet) with helpful prompt messages and call-to-action links
-- [ ] T039 Verify all routes in `routes/web.php` match `specs/002-inertia-frontend/contracts/web-routes.md` — confirm named routes, HTTP verbs, and controller bindings are correct
-- [ ] T040 [P] Share flash message data via `HandleInertiaRequests::share()` so success/error flash messages are available in `AppLayout.vue` across all pages
+- [X] T037 [P] Update `resources/js/Layouts/AppLayout.vue` with nav links for all sections: Dashboard, Exercises, Routines, Analytics, Profile; active-link highlighting using Inertia `usePage().url`
+- [X] T038 [P] Add zero/empty states to `Dashboard.vue` (new user with no sessions) and `Routines/Index.vue` (no routines yet) with helpful prompt messages and call-to-action links
+- [X] T039 Verify all routes in `routes/web.php` match `specs/002-inertia-frontend/contracts/web-routes.md` — confirm named routes, HTTP verbs, and controller bindings are correct
+- [X] T040 [P] Share flash message data via `HandleInertiaRequests::share()` so success/error flash messages are available in `AppLayout.vue` across all pages
 
 ---
 
