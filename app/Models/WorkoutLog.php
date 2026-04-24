@@ -2,44 +2,37 @@
 
 namespace App\Models;
 
-use Database\Factories\WorkoutLogFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class WorkoutLog extends Model
 {
-    /** @use HasFactory<WorkoutLogFactory> */
     use HasFactory;
 
     protected $fillable = [
-        'member_id',
-        'workout_plan_id',
+        'workout_session_id',
         'exercise_id',
-        'sets_done',
-        'reps_done',
+        'set_number',
         'weight',
+        'reps',
         'duration_seconds',
-        'notes',
-        'logged_at',
+        'distance_km',
+        'rpe',
+        'set_type',
     ];
 
     protected function casts(): array
     {
         return [
-            'weight'    => 'decimal:2',
-            'logged_at' => 'datetime',
+            'weight'      => 'decimal:2',
+            'distance_km' => 'decimal:3',
         ];
     }
 
-    public function member(): BelongsTo
+    public function workoutSession(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'member_id');
-    }
-
-    public function workoutPlan(): BelongsTo
-    {
-        return $this->belongsTo(WorkoutPlan::class);
+        return $this->belongsTo(WorkoutSession::class);
     }
 
     public function exercise(): BelongsTo

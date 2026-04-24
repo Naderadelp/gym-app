@@ -2,37 +2,28 @@
 
 namespace App\Policies;
 
+use App\Models\Exercise;
 use App\Models\User;
 
 class ExercisePolicy
 {
-    public function before(User $user, string $ability): ?bool
+    public function view(User $user, Exercise $exercise): bool
     {
-        return $user->hasRole('admin') ? true : null;
-    }
-
-    public function viewAny(User $user): bool
-    {
-        return $user->hasPermissionTo('index-exercise');
-    }
-
-    public function view(User $user): bool
-    {
-        return $user->hasPermissionTo('show-exercise');
+        return true;
     }
 
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create-exercise');
+        return true;
     }
 
-    public function update(User $user): bool
+    public function update(User $user, Exercise $exercise): bool
     {
-        return $user->hasPermissionTo('edit-exercise');
+        return ! is_null($exercise->user_id) && $exercise->user_id === $user->id;
     }
 
-    public function delete(User $user): bool
+    public function delete(User $user, Exercise $exercise): bool
     {
-        return $user->hasPermissionTo('delete-exercise');
+        return ! is_null($exercise->user_id) && $exercise->user_id === $user->id;
     }
 }

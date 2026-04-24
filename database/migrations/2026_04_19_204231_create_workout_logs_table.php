@@ -8,23 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('workout_logs', function (Blueprint $table) {
+        Schema::create('workout_sessions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('member_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('workout_plan_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('exercise_id')->nullable()->constrained()->nullOnDelete();
-            $table->unsignedSmallInteger('sets_done');
-            $table->unsignedSmallInteger('reps_done')->nullable();
-            $table->decimal('weight', 5, 2)->nullable();
-            $table->unsignedSmallInteger('duration_seconds')->nullable();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('routine_id')->nullable()->constrained()->nullOnDelete();
+            $table->timestamp('started_at');
+            $table->timestamp('ended_at')->nullable();
             $table->text('notes')->nullable();
-            $table->timestamp('logged_at');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('workout_logs');
+        Schema::dropIfExists('workout_sessions');
     }
 };

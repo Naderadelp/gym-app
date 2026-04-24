@@ -15,11 +15,13 @@ class StoreExerciseRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'name'         => ['required', 'string', 'max:255'],
-            'category'     => ['required', 'string', 'max:100'],
-            'muscle_group' => ['required', 'string', 'max:100'],
-            'description'  => ['nullable', 'string'],
-            'image'        => ['nullable', 'image', 'max:2048'],
+            'name'               => ['required', 'string', 'max:255'],
+            'description'        => ['nullable', 'string'],
+            'primary_muscle'     => ['required', 'string', 'max:100'],
+            'sub_muscle_target'  => ['required', 'string', 'max:100'],
+            'difficulty_level'   => ['required', 'integer', 'min:1', 'max:5'],
+            'equipment_required' => ['nullable', 'string', 'max:100'],
+            'demonstration'      => ['nullable', 'image', 'max:4096'],
         ];
     }
 }

@@ -8,21 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('workout_plans', function (Blueprint $table) {
+        Schema::create('routines', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('trainer_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('member_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->enum('status', ['active', 'completed', 'paused'])->default('active');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('workout_plans');
+        Schema::dropIfExists('routines');
     }
 };

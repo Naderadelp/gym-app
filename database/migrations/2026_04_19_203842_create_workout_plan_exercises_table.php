@@ -8,22 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('workout_plan_exercises', function (Blueprint $table) {
+        Schema::create('routine_exercises', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('workout_plan_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('routine_id')->constrained()->cascadeOnDelete();
             $table->foreignId('exercise_id')->constrained()->cascadeOnDelete();
-            $table->unsignedSmallInteger('sets')->nullable();
-            $table->unsignedSmallInteger('reps')->nullable();
-            $table->unsignedSmallInteger('duration_seconds')->nullable();
-            $table->unsignedSmallInteger('rest_seconds')->default(60);
-            $table->text('notes')->nullable();
             $table->unsignedSmallInteger('order')->default(0);
-            $table->timestamps();
+            $table->unsignedSmallInteger('target_sets');
+            $table->unsignedSmallInteger('target_reps')->nullable();
+            $table->unsignedSmallInteger('target_rest_seconds')->nullable();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('workout_plan_exercises');
+        Schema::dropIfExists('routine_exercises');
     }
 };

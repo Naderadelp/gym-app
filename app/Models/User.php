@@ -4,25 +4,26 @@ namespace App\Models;
 
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasMedia
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, HasRoles, Notifiable;
+    use HasApiTokens, HasFactory, HasRoles, InteractsWithMedia, Notifiable;
 
     protected $fillable = [
         'name',
+        'display_name',
+        'unit_preference',
         'email',
-        'mobile',
         'password',
-        'age',
-        'height',
-        'weight',
     ];
 
     protected $hidden = [
@@ -35,10 +36,27 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password'          => 'hashed',
-            'age'               => 'integer',
-            'height'            => 'decimal:2',
-            'weight'            => 'decimal:2',
         ];
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('avatar')->singleFile();
+    }
+
+    public function bodyMetrics(): HasMany
+    {
+        return $this->hasMany(BodyMetric::class);
+    }
+
+    public function routines(): HasMany
+    {
+        return $this->hasMany(Routine::class);
+    }
+
+    public function workoutSessions(): HasMany
+    {
+        return $this->hasMany(WorkoutSession::class);
     }
 
     public function generateTokenString(): string

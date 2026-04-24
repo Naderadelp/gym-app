@@ -1,11 +1,15 @@
 <?php
 
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BodyMetricController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoutineController;
+use App\Http\Controllers\RoutineGeneratorController;
 use App\Http\Controllers\WorkoutLogController;
-use App\Http\Controllers\WorkoutPlanController;
+use App\Http\Controllers\WorkoutSessionController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
@@ -16,18 +20,28 @@ Route::prefix('auth')->group(function () {
     Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
 });
 
-Route::middleware('auth:sanctum')->group(function () {
+// V1 API — Personal Workout Tracker
+Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
+    // US1 — Profile & Body Metrics
+    Route::get('profile', [ProfileController::class, 'show']);
+    Route::put('profile', [ProfileController::class, 'update']);
+    Route::post('profile/avatar', [ProfileController::class, 'uploadAvatar']);
+    Route::apiResource('body-metrics', BodyMetricController::class)->only(['index', 'store', 'destroy']);
+
+    // US2 — Exercise Library
     Route::apiResource('exercises', ExerciseController::class);
 
-    Route::apiResource('workout-plans', WorkoutPlanController::class);
-    Route::post('workout-plans/{workoutPlan}/exercises', [WorkoutPlanController::class, 'attachExercise']);
-    Route::delete('workout-plans/{workoutPlan}/exercises/{exercise}', [WorkoutPlanController::class, 'detachExercise']);
+    // US3 — Routines & Smart Generator
+    Route::post('routines/generate', [RoutineGeneratorController::class, 'generate']);
+    Route::apiResource('routines', RoutineController::class);
 
-    Route::get('logs', [WorkoutLogController::class, 'myLogs']);
-    Route::post('logs', [WorkoutLogController::class, 'store']);
-    Route::get('members/{member}/logs', [WorkoutLogController::class, 'memberLogs']);
-    Route::get('members/{member}/progress', [WorkoutLogController::class, 'memberProgress']);
+    // US4 — Workout Sessions & Logging
+    Route::apiResource('workout-sessions', WorkoutSessionController::class);
+    Route::post('workout-sessions/{workoutSession}/finish', [WorkoutSessionController::class, 'finish']);
+    Route::post('workout-sessions/{workoutSession}/logs', [WorkoutLogController::class, 'store']);
+    Route::delete('workout-logs/{workoutLog}', [WorkoutLogController::class, 'destroy']);
 
-    Route::get('admin/stats', [AdminController::class, 'stats']);
-    Route::put('admin/users/{user}/role', [AdminController::class, 'assignRole']);
+    // US5 — Analytics
+    Route::get('analytics/volume', [AnalyticsController::class, 'volume']);
+    Route::get('analytics/personal-records', [AnalyticsController::class, 'personalRecords']);
 });

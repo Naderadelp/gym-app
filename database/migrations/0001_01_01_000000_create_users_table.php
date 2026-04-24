@@ -15,12 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('mobile')->unique();
+            $table->string('mobile')->nullable()->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->unsignedSmallInteger('age')->nullable();
-            $table->decimal('height', 5, 2)->nullable();
-            $table->decimal('weight', 5, 2)->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

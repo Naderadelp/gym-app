@@ -6,59 +6,71 @@ use App\Http\Requests\Exercise\StoreExerciseRequest;
 use App\Http\Requests\Exercise\UpdateExerciseRequest;
 use App\Http\Resources\ExerciseResource;
 use App\Models\Exercise;
-use App\Repositories\Contracts\ExerciseRepositoryInterface;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class ExerciseController extends BaseController
 {
-    public function __construct(private ExerciseRepositoryInterface $exercises) {}
-
-    public function index(Request $request): JsonResponse
+    public function index(): JsonResponse
     {
-        $this->authorize('viewAny', Exercise::class);
+        $paginator = QueryBuilder::for(Exercise::availableTo(auth()->id()))
+            ->allowedFilters([
+                AllowedFilter::exact('primary_muscle'),
+                AllowedFilter::exact('difficulty_level'),
+                AllowedFilter::partial('equipment_required'),
+                AllowedFilter::partial('name'),
+            ])
+            ->allowedSorts(['name', 'difficulty_level', 'created_at'])
+            ->defaultSort('name')
+            ->with('media')
+            ->paginate(request()->integer('per_page', 15))
+            ->withQueryString();
 
-        return $this->paginated($this->exercises->all($request), ExerciseResource::class);
+        return $this->paginated($paginator, ExerciseResource::class);
     }
 
     public function store(StoreExerciseRequest $request): JsonResponse
     {
-        $exercise = $this->exercises->createWithMedia(
-            $request->safe()->except('image'),
-            'image',
-            'cover'
+        $exercise = Exercise::create(
+            array_merge($request->safe()->except('demonstration'), ['user_id' => auth()->id()])
         );
 
-        return $this->success(new ExerciseResource($exercise), 201, 'Exercise created.');
+        if ($request->hasFile('demonstration')) {
+            $exercise->addMediaFromRequest('demonstration')
+                ->usingFileName(md5(time()) . '.' . $request->file('demonstration')->extension())
+                ->toMediaCollection('demonstration');
+        }
+
+        return $this->success(new ExerciseResource($exercise->load('media')), 201, 'Exercise created.');
     }
 
-    public function show(Request $request, int $id): JsonResponse
+    public function show(Exercise $exercise): JsonResponse
     {
-        $this->authorize('view', Exercise::class);
+        $this->authorize('view', $exercise);
 
-        return $this->success(new ExerciseResource($this->exercises->find($id)));
+        return $this->success(new ExerciseResource($exercise->load('media')));
     }
 
-    public function update(UpdateExerciseRequest $request, int $id): JsonResponse
+    public function update(UpdateExerciseRequest $request, Exercise $exercise): JsonResponse
     {
-        $exercise = $this->exercises->updateWithMedia(
-            $id,
-            $request->safe()->except('image'),
-            'image',
-            'cover',
-            sync: true
-        );
+        $this->authorize('update', $exercise);
+        $exercise->update($request->safe()->except('demonstration'));
 
-        return $this->success(new ExerciseResource($exercise), 200, 'Exercise updated.');
+        if ($request->hasFile('demonstration')) {
+            $exercise->clearMediaCollection('demonstration');
+            $exercise->addMediaFromRequest('demonstration')
+                ->usingFileName(md5(time()) . '.' . $request->file('demonstration')->extension())
+                ->toMediaCollection('demonstration');
+        }
+
+        return $this->success(new ExerciseResource($exercise->fresh()->load('media')));
     }
 
-    public function destroy(int $id): JsonResponse
+    public function destroy(Exercise $exercise): JsonResponse
     {
-        $exercise = $this->exercises->find($id);
         $this->authorize('delete', $exercise);
-
-        $this->exercises->delete($id);
+        $exercise->delete();
 
         return $this->success(null, 200, 'Exercise deleted.');
     }
